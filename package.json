@@ -1,6 +1,6 @@
 {
   "name": "react-native-chrome-custom-tabs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Launch Chrome Custom Tabs from your React Native app",
   "main": "ChromeCustomTabsClient.js",
   "scripts": {

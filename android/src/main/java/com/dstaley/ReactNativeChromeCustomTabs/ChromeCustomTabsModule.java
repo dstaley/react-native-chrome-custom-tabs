@@ -37,9 +37,11 @@ public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implement
   }
 
   private void sendEvent(String eventName) {
-    mContext
-      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit(eventName, null);
+    if (mContext.hasActiveCatalystInstance()) {
+      mContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit(eventName, null);
+    }
   }
 
   @Override
