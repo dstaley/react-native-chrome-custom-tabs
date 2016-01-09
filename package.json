@@ -1,0 +1,25 @@
+{
+  "name": "react-native-chrome-custom-tabs",
+  "version": "0.0.1",
+  "description": "Launch Chrome Custom Tabs from your React Native app",
+  "main": "ChromeCustomTabsClient.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dstaley/react-native-chrome-custom-tabs.git"
+  },
+  "keywords": [
+    "react-component",
+    "react-native",
+    "android",
+    "chrome"
+  ],
+  "author": "Dylan Staley <staley.dylan@gmail.com> (https://dstaley.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dstaley/react-native-chrome-custom-tabs/issues"
+  },
+  "homepage": "https://github.com/dstaley/react-native-chrome-custom-tabs"
+}
