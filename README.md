@@ -1,6 +1,6 @@
 # react-native-chrome-custom-tabs
 
-![Demo of Chrome Custom Tabs in React Native](http://i.imgur.com/ZxO4Tut.gifv)
+![Demo of Chrome Custom Tabs in React Native](http://i.imgur.com/ZxO4Tut.gif)
 
 ## Installation
 
