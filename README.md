@@ -14,7 +14,26 @@ project(':ReactNativeChromeCustomTabs').projectDir = new File(rootProject.projec
 4. Import and register the module in your `MainActivity.java` file:
 ```java
 import com.dstaley.ReactNativeChromeCustomTabs.ChromeCustomTabsPackage; // <-- Import
+```
 
+### For React Native >= v0.29
+
+```java
+public class MyReactNativeHost extends ReactNativeHost {
+  @Override
+  protected List<ReactPackage> getPackages() {
+    return Arrays.<ReactPackage>asList(
+        ...
+        new ChromeCustomTabsPackage(),  // <-- Register
+        ...
+    );
+  }
+}
+```
+
+### For React Native v0.19 - v0.28
+
+```java
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
 
     private ReactInstanceManager mReactInstanceManager;
