@@ -17,10 +17,20 @@ import com.dstaley.ReactNativeChromeCustomTabs.ChromeCustomTabsModule;
 
 public class ChromeCustomTabsPackage implements ReactPackage {
 
+  private final CustomTabsIntentEditor mIntentEditor;
+
+  public ChromeCustomTabsPackage() {
+    this(null);
+  }
+
+  public ChromeCustomTabsPackage(CustomTabsIntentEditor intentEditor) {
+    mIntentEditor = intentEditor;
+  }
+
   @Override
   public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
     List<NativeModule> modules = new ArrayList<>();
-    modules.add(new ChromeCustomTabsModule(reactContext));
+    modules.add(new ChromeCustomTabsModule(reactContext, mIntentEditor));
     return modules;
   }
 

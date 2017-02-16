@@ -1,8 +1,8 @@
 package com.dstaley.ReactNativeChromeCustomTabs;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -10,19 +10,18 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import com.dstaley.ReactNativeChromeCustomTabs.CustomTabActivityHelper;
-
 public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implements CustomTabActivityHelper.ConnectionCallback {
 
   private CustomTabActivityHelper mCustomTabActivityHelper;
   private ReactApplicationContext mContext;
+  private CustomTabsIntentEditor mIntentEditor;
 
-  public ChromeCustomTabsModule(ReactApplicationContext reactContext) {
+  ChromeCustomTabsModule(
+      ReactApplicationContext reactContext,
+      @Nullable CustomTabsIntentEditor intentEditor) {
     super(reactContext);
     mContext = reactContext;
+    mIntentEditor = intentEditor;
     mCustomTabActivityHelper = new CustomTabActivityHelper();
     mCustomTabActivityHelper.setConnectionCallback(this);
     mCustomTabActivityHelper.bindCustomTabsService(reactContext.getApplicationContext());
@@ -68,8 +67,11 @@ public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implement
       return;
     }
 
-    CustomTabsIntent customTabsIntent =
-        new CustomTabsIntent.Builder(mCustomTabActivityHelper.getSession()).build();
-    CustomTabActivityHelper.openCustomTab(activity, customTabsIntent, Uri.parse(url), null);
+    CustomTabsIntent.Builder builder =
+        new CustomTabsIntent.Builder(mCustomTabActivityHelper.getSession());
+    if (mIntentEditor != null) {
+      mIntentEditor.customize(activity, builder);
+    }
+    CustomTabActivityHelper.openCustomTab(activity, builder.build(), Uri.parse(url), null);
   }
 }
