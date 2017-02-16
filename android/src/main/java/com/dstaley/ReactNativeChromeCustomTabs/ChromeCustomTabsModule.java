@@ -1,6 +1,7 @@
 package com.dstaley.ReactNativeChromeCustomTabs;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
@@ -72,6 +73,12 @@ public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implement
     if (mIntentEditor != null) {
       mIntentEditor.customize(activity, builder);
     }
-    CustomTabActivityHelper.openCustomTab(activity, builder.build(), Uri.parse(url), null);
+    CustomTabActivityHelper.openCustomTab(activity, builder.build(), Uri.parse(url),
+        new CustomTabActivityHelper.CustomTabFallback() {
+          @Override
+          public void openUri(Activity activity, Uri uri) {
+            activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+          }
+        });
   }
 }
