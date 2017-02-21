@@ -29,10 +29,16 @@ public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implement
   }
 
   private void sendEvent(String eventName) {
-    if (mContext.hasActiveCatalystInstance()) {
-      mContext
-        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-        .emit(eventName, null);
+    try {
+      if (mContext.hasActiveCatalystInstance()) {
+        mContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, null);
+      }
+    } catch (RuntimeException e) {
+      // Work around a race condition in RN < 0.38.0, resulting in
+      // a RuntimeException of "Attempt to call JS function before JS bundle is loaded."
+      // Fixed in react-native#6a45f05.
     }
   }
 
