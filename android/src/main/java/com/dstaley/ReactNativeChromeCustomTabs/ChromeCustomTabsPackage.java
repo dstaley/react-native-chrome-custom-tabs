@@ -20,11 +20,20 @@ public class ChromeCustomTabsPackage implements ReactPackage {
   private final CustomTabsIntentEditor mIntentEditor;
 
   public ChromeCustomTabsPackage() {
-    this(null);
+    this((CustomTabsIntentEditor) null);
   }
 
   public ChromeCustomTabsPackage(CustomTabsIntentEditor intentEditor) {
     mIntentEditor = intentEditor;
+  }
+
+  /**
+   * @deprecated
+   * The activity parameter is no longer used.
+   */
+  @Deprecated
+  public ChromeCustomTabsPackage(Activity activity) {
+    this((CustomTabsIntentEditor) null);
   }
 
   @Override
