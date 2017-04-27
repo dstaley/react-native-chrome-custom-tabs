@@ -2,45 +2,43 @@ package com.dstaley.ReactNativeChromeCustomTabs;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.net.Uri;
-import android.widget.Toast;
+import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
-import android.support.v7.app.AppCompatActivity;
 
-import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import com.dstaley.ReactNativeChromeCustomTabs.CustomTabActivityHelper;
-
 public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implements CustomTabActivityHelper.ConnectionCallback {
 
-  Activity mActivity;
   private CustomTabActivityHelper mCustomTabActivityHelper;
   private ReactApplicationContext mContext;
+  private CustomTabsIntentEditor mIntentEditor;
 
-  public ChromeCustomTabsModule(ReactApplicationContext reactContext, Activity activity) {
+  ChromeCustomTabsModule(
+      ReactApplicationContext reactContext,
+      @Nullable CustomTabsIntentEditor intentEditor) {
     super(reactContext);
-    mActivity = activity;
     mContext = reactContext;
-    String packageName = CustomTabsHelper.getPackageNameToUse(mActivity);
+    mIntentEditor = intentEditor;
     mCustomTabActivityHelper = new CustomTabActivityHelper();
     mCustomTabActivityHelper.setConnectionCallback(this);
-    mCustomTabActivityHelper.bindCustomTabsService(mActivity, reactContext.getApplicationContext());
+    mCustomTabActivityHelper.bindCustomTabsService(reactContext.getApplicationContext());
   }
 
   private void sendEvent(String eventName) {
-    if (mContext.hasActiveCatalystInstance()) {
-      mContext
-        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-        .emit(eventName, null);
+    try {
+      if (mContext.hasActiveCatalystInstance()) {
+        mContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, null);
+      }
+    } catch (RuntimeException e) {
+      // Work around a race condition in RN < 0.38.0, resulting in
+      // a RuntimeException of "Attempt to call JS function before JS bundle is loaded."
+      // Fixed in react-native#6a45f05.
     }
   }
 
@@ -71,7 +69,22 @@ public class ChromeCustomTabsModule extends ReactContextBaseJavaModule implement
 
   @ReactMethod
   public void launchCustomTab(String url) {
-    CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder(mCustomTabActivityHelper.getSession()).build();
-    mCustomTabActivityHelper.openCustomTab(mActivity, customTabsIntent, Uri.parse(url), null);
+    Activity activity = getCurrentActivity();
+    if (activity == null) {
+      return;
+    }
+
+    CustomTabsIntent.Builder builder =
+        new CustomTabsIntent.Builder(mCustomTabActivityHelper.getSession());
+    if (mIntentEditor != null) {
+      mIntentEditor.customize(activity, builder);
+    }
+    CustomTabActivityHelper.openCustomTab(activity, builder.build(), Uri.parse(url),
+        new CustomTabActivityHelper.CustomTabFallback() {
+          @Override
+          public void openUri(Activity activity, Uri uri) {
+            activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+          }
+        });
   }
 }
