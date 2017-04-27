@@ -72,6 +72,27 @@ ChromeCustomTabsClient.mayLaunchUrl('http://i.imgur.com/6ogeF96.gif');
 ChromeCustomTabsClient.launchCustomTab('http://i.imgur.com/xjdem.gif');
 ```
 
+## Customization
+
+You can supply a `CustomTabsIntentEditor` to customize the CustomTabsIntent produced by
+this package.
+
+```java
+    new ChromeCustomTabsPackage(new CustomTabsIntentEditor() {
+      @Override
+      public void customize(Context context, CustomTabsIntent.Builder builder) {
+        builder
+          .addDefaultShareMenuItem()
+          .setShowTitle(true)
+          .enableUrlBarHiding();
+      }
+    })
+```
+
+For a full description of the available options, see the official documentation for
+[CustomTabsIntent.Builder](https://developer.android.com/reference/android/support/customtabs/CustomTabsIntent.Builder.html)
+and the [custom tabs implementation guide](https://developer.chrome.com/multidevice/android/customtabs#implementationguide).
+
 ## License
 
 MIT
